@@ -1,0 +1,30 @@
+#
+# ratpoison config
+# by andrey ivanov <mail@werf.ru>
+#
+
+escape C-a 
+bind f exec mozilla-firefox
+bind c exec koi8rxterm -fa WerfProFont -fs 9 +sb -lc
+set padding 0 14 3 0
+set font WerfProFont-9
+bind s hsplit
+bind C-s hsplit
+bind S split
+bind C-S split
+
+# call them as i sees them
+set winname title
+
+# initialize the pointer
+exec xsetroot -solid black -cursor_name left_ptr
+
+# workspaces
+exec rpws -i
+exec /usr/bin/rpws init 6 -k
+bind F1 exec rpws 1
+bind F2 exec rpws 2
+bind F3 exec rpws 3
+bind F4 exec rpws 4 
+bind F5 exec rpws 5 
+bind F6 exec rpws 6 

@@ -1,0 +1,85 @@
+# vim:ts=3:et:ft=
+#
+# tcsh 6 config
+#
+
+# environment variables
+setenv BLOCKSIZE 1k
+setenv IRCNAME "*Unknown*"
+
+# let my ~/bins override, find other bins quickly
+setenv PATH ~/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/usr/X11R6/bin
+
+# on non-interactive shells, just exit here to speed things up
+if ($?USER == 0 || $?prompt == 0 || $tty == "") then
+	exit
+endif
+
+alias pdf 'zathura'
+
+   setenv PKG_PATH ftp://ftp.gamma.ru/pub/OpenBSD/4.8/packages/`arch -s`/
+
+# when i say vi i mean vim (if it's installed)
+if (-x "`which vim`") then
+   alias vi 'vim'
+   alias view 'vim -R'
+   setenv EDITOR `which vim`
+else
+   setenv EDITOR /usr/bin/vi
+endif
+
+# keybindings
+bindkey ^[[1~ beginning-of-line      # home key
+bindkey ^[[4~ end-of-line            # end key
+bindkey ^T load-average              # siginfo
+bindkey ^W backward-delete-word      # just a word, thanks
+
+# super duper tab completion
+set noglob
+  # jobs
+  complete {fg,bg,stop}  c/%/j/ p/1/"(%)"//
+
+  # settings
+  complete {,un}alias  'p/1/a/' 'p/2/c/'
+  complete bindkey 'C/*/b/'
+  complete env 'c/*=/f/' 'p/1/e/=/' 'p/2/c/'
+  complete {,un}limit c/-/"(h)"/ n/*/l/
+  complete {,un}setenv   'p/1/e/' 'c/*:/f/'
+  complete {,un}set   'c/*=/f/' 'p/1/s/=' 'n/=/f/'
+
+  # only cd to dirs
+  complete cd p/1/d/
+
+  # show bins
+  complete {man,which,where,whereis}  'C/*/c/'
+
+  # let me tab complete ssh hosts 
+  if ( -r $HOME/.ssh/known_hosts ) then
+    set hosts=`grep -v '^#' $HOME/.ssh/known_hosts | sed -e 's/ .*//' -e 's/,/ /g' | tr ' ' '\n' | sort -n | grep -v '^$'` >& /dev/null
+  endif
+  complete {ssh,ping,telnet,traceroute} p/1/\$hosts/
+unset noglob 
+set correct=all
+
+# options
+set autocorrect                      # fix typos
+set autolist                         # don't make me hit ctrl+d
+set autologout=0                     # maybe i'm just taking a nap
+set correct=none                     # don't assume anything
+set history=500                      # just in case
+unset ignoreeof                      # when i control+d, i want to logout
+set listjobs=long                    # shoe me pids
+set notify                           # curious george
+set noclobber                        # halp me
+set printexitvalue                   # i want to know if something went wrong
+set prompt='%n@%m:%~%# '             # yeah
+set rmstar                           # recycle bin?
+set watch=(0 any any)                # i see all
+set who="%B%n%b %a %l at %@"         # format a bit
+
+# etc
+limit coredumpsize 0                 # don't know why you'd want anything else
+umask 022                            # be nice
+
+# siginfo
+stty status '^T'
